@@ -32,8 +32,9 @@ export async function POST(req) {
     return res;
   } catch (err) {
     console.error('[login]', err.message);
+    // Return real error temporarily to diagnose production issues
     return NextResponse.json(
-      { error: 'خطأ في الخادم', detail: process.env.NODE_ENV !== 'production' ? err.message : undefined },
+      { error: 'خطأ في الخادم', detail: err.message },
       { status: 500 }
     );
   }
