@@ -4,9 +4,8 @@ const bcrypt = require('bcryptjs');
 async function main() {
   const { PrismaClient } = await import('@prisma/client');
 
-  const prisma = new PrismaClient({
-    datasourceUrl: process.env.DATABASE_URL,
-  });
+  // Prisma 7: reads DATABASE_URL from env automatically
+  const prisma = new PrismaClient();
 
   try {
     // ── Admin user ────────────────────────────────────────────────────────────
