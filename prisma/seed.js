@@ -1,18 +1,7 @@
 import bcrypt from 'bcryptjs'
 import { PrismaClient } from '@prisma/client'
-import { PrismaLibSql } from '@prisma/adapter-libsql'
 
-function getPrisma() {
-  const tursoUrl = process.env.TURSO_DATABASE_URL
-  const adapter = new PrismaLibSql(
-    tursoUrl
-      ? { url: tursoUrl, authToken: process.env.TURSO_AUTH_TOKEN }
-      : { url: 'file:prisma/school.db' }
-  )
-  return new PrismaClient({ adapter })
-}
-
-const prisma = getPrisma()
+const prisma = new PrismaClient()
 
 async function main() {
   const adminEmail    = process.env.ADMIN_EMAIL    || 'admin@mokhtar-school.ma'
@@ -84,11 +73,7 @@ async function main() {
   }
 
   if ((await prisma.student.count()) === 0) {
-    const grades = JSON.stringify([
-      { subject: 'اللغة العربية', grade: 15 },
-      { subject: 'الرياضيات', grade: 14 },
-      { subject: 'الفرنسية', grade: 13 },
-    ])
+    const grades = JSON.stringify([{ subject: 'اللغة العربية', grade: 15 }, { subject: 'الرياضيات', grade: 14 }])
     const s1 = await prisma.student.create({ data: { massarCode: 'J123456789', fullname: 'أمين بنعلي',    level: 'السنة الخامسة', classroom: '5أ' } })
     const s2 = await prisma.student.create({ data: { massarCode: 'J987654321', fullname: 'سلمى الإدريسي', level: 'السنة السادسة', classroom: '6ب' } })
     await prisma.studentResult.createMany({ data: [
@@ -99,17 +84,11 @@ async function main() {
   }
 
   if ((await prisma.announcement.count()) === 0) {
-    await prisma.announcement.create({ data: {
-      title: 'تعليق الدراسة بمناسبة العيد الوطني',
-      content: 'تعليق الدراسة يومي 17 و18 نوفمبر.',
-      isActive: true,
-    }})
+    await prisma.announcement.create({ data: { title: 'تعليق الدراسة بمناسبة العيد الوطني', content: 'تعليق الدراسة يومي 17 و18 نوفمبر.', isActive: true } })
     console.log('✓ Announcements')
   }
 
   console.log('\n✅ Done! Login: admin@mokhtar-school.ma / admin123')
 }
 
-main()
-  .catch(e => { console.error('Seed error:', e.message); process.exit(1) })
-  .finally(() => prisma.$disconnect())
+main().catch(e => { console.error(e.message); process.exit(1) }).finally(() => prisma.$disconnect())
