@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import prisma from '@/lib/db';
 import { verifyToken } from '@/lib/auth';
 
 function auth(req) { return verifyToken(req.cookies.get('token')?.value); }

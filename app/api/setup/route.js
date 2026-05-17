@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import prisma from '@/lib/db';
 import { hashPassword } from '@/lib/auth';
 
 // One-time setup endpoint — creates admin user if none exist.

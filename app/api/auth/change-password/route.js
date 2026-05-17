@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import prisma from '@/lib/db';
 import { comparePassword, hashPassword, verifyToken } from '@/lib/auth';
 
 export async function POST(req) {

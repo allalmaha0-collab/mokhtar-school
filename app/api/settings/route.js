@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import { prisma, getSettings } from '@/lib/db';
+import prisma, { getSettings } from '@/lib/db';
 import { verifyToken } from '@/lib/auth';
 
 export async function GET() {
