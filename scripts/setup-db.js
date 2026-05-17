@@ -1,14 +1,9 @@
-/**
- * Runs `prisma db push` then seeds the database.
- * Skips gracefully when DATABASE_URL is not set (local dev without a DB).
- * On Vercel, DATABASE_URL is always set so both steps run.
- */
 const { execSync } = require('child_process');
 
-const url = process.env.DATABASE_URL;
+const tursoUrl = process.env.TURSO_DATABASE_URL;
 
-if (!url || url.startsWith('file:')) {
-  console.log('⏭  No PostgreSQL DATABASE_URL — skipping db push & seed.');
+if (!tursoUrl) {
+  console.log('⏭  No TURSO_DATABASE_URL — skipping db push & seed (local dev uses existing SQLite file).');
   process.exit(0);
 }
 
