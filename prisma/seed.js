@@ -1,134 +1,123 @@
 const { PrismaClient } = require('@prisma/client');
-const { PrismaLibSql } = require('@prisma/adapter-libsql');
 const bcrypt = require('bcryptjs');
-const path = require('path');
 
-const dbPath = path.resolve(__dirname, 'school.db');
-const adapter = new PrismaLibSql({ url: 'file:' + dbPath });
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({
+  datasourceUrl: process.env.DATABASE_URL,
+});
 
 async function main() {
-  // Admin user
-  const hash = await bcrypt.hash('admin123', 10);
+  // ─── Admin user ───────────────────────────────────────────────────────────
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@mokhtar-school.ma';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+  const hash = await bcrypt.hash(adminPassword, 10);
   await prisma.user.upsert({
-    where: { email: 'admin@mokhtar-school.ma' },
+    where:  { email: adminEmail },
     update: {},
-    create: { email: 'admin@mokhtar-school.ma', passwordHash: hash, name: 'عبد العزيز علال', role: 'admin' },
+    create: { email: adminEmail, passwordHash: hash, name: 'عبد العزيز علال', role: 'admin' },
   });
+  console.log('✓ Admin:', adminEmail);
 
-  // Settings
+  // ─── Settings ─────────────────────────────────────────────────────────────
   const settings = [
-    { key: 'school_name',    value: 'مجموعة مدارس محمد المخطار' },
-    { key: 'director',       value: 'عبد العزيز علال' },
-    { key: 'phone',          value: '0662190618' },
-    { key: 'email',          value: 'contact@mokhtar-school.ma' },
-    { key: 'address',        value: 'المديرية الإقليمية فجيج — جهة الشرق، المملكة المغربية' },
-    { key: 'lat',            value: '32.551572' },
-    { key: 'lng',            value: '-1.952622' },
-    { key: 'facebook',       value: '' },
-    { key: 'whatsapp',       value: '212662190618' },
-    { key: 'welcome_message',value: 'أهلاً وسهلاً بكم في الموقع الرسمي لمجموعة مدارس محمد المخطار. نسعى إلى تقديم تعليم جيد وبيئة آمنة لكل تلاميذنا.' },
-    { key: 'about_text',     value: 'مجموعة مدارس محمد المخطار مؤسسة تعليمية عمومية تابعة لوزارة التربية الوطنية والتعليم الأولي والرياضة، تقع في نطاق المديرية الإقليمية فجيج التابعة للأكاديمية الجهوية للتربية والتكوين لجهة الشرق.' },
+    { key: 'school_name',     value: 'مجموعة مدارس محمد المخطار' },
+    { key: 'director',        value: 'عبد العزيز علال' },
+    { key: 'phone',           value: '0662190618' },
+    { key: 'email',           value: 'contact@mokhtar-school.ma' },
+    { key: 'address',         value: 'المديرية الإقليمية فجيج — جهة الشرق، المملكة المغربية' },
+    { key: 'lat',             value: '32.551572' },
+    { key: 'lng',             value: '-1.952622' },
+    { key: 'facebook',        value: '' },
+    { key: 'whatsapp',        value: '212662190618' },
+    { key: 'welcome_message', value: 'أهلاً وسهلاً بكم في الموقع الرسمي لمجموعة مدارس محمد المخطار.' },
+    { key: 'about_text',      value: 'مجموعة مدارس محمد المخطار مؤسسة تعليمية عمومية تابعة لوزارة التربية الوطنية.' },
   ];
   for (const s of settings) {
-    await prisma.setting.upsert({ where: { key: s.key }, update: { value: s.value }, create: s });
+    await prisma.setting.upsert({ where: { key: s.key }, update: {}, create: s });
+  }
+  console.log('✓ Settings seeded');
+
+  // Skip if data already exists (idempotent check)
+  const teacherCount = await prisma.teacher.count();
+  if (teacherCount === 0) {
+    const teachers = [
+      { fullname: 'عبد العزيز علال',      subject: 'مدير المؤسسة',     isAdminStaff: true,  order: 1 },
+      { fullname: 'فاطمة الزهراء البكري', subject: 'اللغة العربية',    isAdminStaff: false, order: 2 },
+      { fullname: 'محمد الحسني',          subject: 'الرياضيات',        isAdminStaff: false, order: 3 },
+      { fullname: 'خديجة العلوي',         subject: 'الفرنسية',         isAdminStaff: false, order: 4 },
+      { fullname: 'يوسف المرابط',         subject: 'التربية الإسلامية',isAdminStaff: false, order: 5 },
+      { fullname: 'لطيفة القادري',        subject: 'التربية البدنية',  isAdminStaff: false, order: 6 },
+      { fullname: 'عمر بنعلي',           subject: 'التاريخ والجغرافيا',isAdminStaff: false, order: 7 },
+      { fullname: 'نجاة الشرقاوي',       subject: 'العلوم',            isAdminStaff: false, order: 8 },
+    ];
+    await prisma.teacher.createMany({ data: teachers });
+    console.log('✓ Teachers seeded');
   }
 
-  // News
-  const newsItems = [
-    { title: 'انطلاق الموسم الدراسي الجديد', content: 'تُعلن مجموعة مدارس محمد المخطار عن انطلاق الموسم الدراسي الجديد بأجواء احتفالية مميزة، مع استقبال التلاميذ الجدد وتهيئة الفصول الدراسية.', category: 'إعلان', publishedAt: new Date('2025-09-04') },
-    { title: 'حفل توزيع الجوائز السنوي', content: 'نظّمت المؤسسة حفل توزيع الجوائز السنوي تكريماً للتلاميذ المتفوقين في الموسم الدراسي، في جو من الفرحة والحماس.', category: 'فعالية', publishedAt: new Date('2025-07-10') },
-    { title: 'الأسبوع التربوي للقراءة', content: 'احتضنت المؤسسة الأسبوع التربوي للقراءة بمشاركة واسعة من التلاميذ والأساتذة، مع تنظيم أنشطة ثقافية متنوعة.', category: 'ثقافي', publishedAt: new Date('2025-11-15') },
-    { title: 'نتائج الفصل الأول متاحة الآن', content: 'أُعلنت نتائج الفصل الدراسي الأول على الموقع الرسمي للمؤسسة. يمكن للتلاميذ الاطلاع على نتائجهم باستخدام رقم المسار.', category: 'نتائج', publishedAt: new Date('2026-01-20') },
-    { title: 'رحلة تربوية إلى مدينة وجدة', content: 'نظّمت المؤسسة رحلة تربوية إلى مدينة وجدة للتعريف بالموروث الثقافي والحضاري للمنطقة الشرقية.', category: 'نشاط', publishedAt: new Date('2025-12-05') },
-  ];
-  for (const n of newsItems) {
-    await prisma.news.create({ data: n });
-  }
-
-  // Teachers
-  const teachers = [
-    { fullname: 'عبد العزيز علال', subject: 'مدير المؤسسة', isAdminStaff: true, order: 1 },
-    { fullname: 'فاطمة الزهراء البكري', subject: 'اللغة العربية', order: 2 },
-    { fullname: 'محمد الحسني', subject: 'الرياضيات', order: 3 },
-    { fullname: 'خديجة العلوي', subject: 'الفرنسية', order: 4 },
-    { fullname: 'يوسف المرابط', subject: 'التربية الإسلامية', order: 5 },
-    { fullname: 'لطيفة القادري', subject: 'التربية البدنية', order: 6 },
-    { fullname: 'عمر بنعلي', subject: 'التاريخ والجغرافيا', order: 7 },
-    { fullname: 'نجاة الشرقاوي', subject: 'العلوم', order: 8 },
-    { fullname: 'رشيد الإدريسي', subject: 'مساعد اجتماعي', isAdminStaff: true, order: 9 },
-  ];
-  for (const t of teachers) {
-    await prisma.teacher.create({ data: t });
-  }
-
-  // Clubs
-  const clubs = [
-    { name: 'نادي القراءة والكتابة', description: 'ينمّي حب القراءة والكتابة الإبداعية لدى التلاميذ من خلال ورشات أسبوعية.', supervisors: 'فاطمة الزهراء البكري', isActive: true, order: 1 },
-    { name: 'النادي الرياضي', description: 'يشجّع على ممارسة الرياضة وتنمية روح التحدي والتعاون.', supervisors: 'لطيفة القادري', isActive: true, order: 2 },
-    { name: 'نادي الفنون التشكيلية', description: 'يكتشف المواهب الفنية ويُنمّي الإبداع من خلال الرسم والتشكيل.', supervisors: 'نجاة الشرقاوي', isActive: true, order: 3 },
-    { name: 'نادي المسرح والفن', description: 'ينمّي مهارات التعبير والإلقاء والتمثيل لدى التلاميذ.', supervisors: 'خديجة العلوي', isActive: true, order: 4 },
-    { name: 'نادي العلوم والاكتشاف', description: 'يُشجّع على التفكير العلمي وإجراء التجارب البسيطة.', supervisors: 'نجاة الشرقاوي', isActive: true, order: 5 },
-  ];
-  for (const c of clubs) {
-    await prisma.club.create({ data: c });
-  }
-
-  // Activities
-  const activities = [
-    { title: 'الاحتفال باليوم العالمي للكتاب', description: 'فعالية ثقافية بمناسبة اليوم العالمي للكتاب شارك فيها جميع تلاميذ المؤسسة.', category: 'ثقافي', date: new Date('2025-04-23') },
-    { title: 'مسابقة الخط العربي', description: 'مسابقة في الخط العربي لاكتشاف المواهب وتنمية الهوية الثقافية.', category: 'مسابقة', date: new Date('2025-03-10') },
-    { title: 'الحفل الختامي للموسم الدراسي', description: 'حفل ختامي بهيج تخلله توزيع الجوائز وعروض فنية متنوعة.', category: 'احتفال', date: new Date('2025-06-28') },
-    { title: 'يوم الرياضة المدرسي', description: 'يوم مفتوح للرياضة والترفيه شارك فيه كل تلاميذ المؤسسة.', category: 'رياضي', date: new Date('2025-05-15') },
-  ];
-  for (const a of activities) {
-    await prisma.activity.create({ data: a });
-  }
-
-  // Students (sample for testing)
-  const students = [
-    { massarCode: 'J123456789', fullname: 'أمين بنعلي', level: 'السنة الخامسة', classroom: '5أ' },
-    { massarCode: 'J987654321', fullname: 'سلمى الإدريسي', level: 'السنة السادسة', classroom: '6ب' },
-    { massarCode: 'J111222333', fullname: 'كريم المرابط', level: 'السنة الرابعة', classroom: '4أ' },
-  ];
-  for (const s of students) {
-    const student = await prisma.student.create({ data: s });
-    await prisma.studentResult.create({
-      data: {
-        studentId: student.id,
-        semester: 'الفصل الأول',
-        generalAverage: 14.5,
-        councilDecision: 'منتقل',
-        grades: JSON.stringify([
-          { subject: 'اللغة العربية', grade: 15 },
-          { subject: 'الرياضيات', grade: 14 },
-          { subject: 'الفرنسية', grade: 13 },
-          { subject: 'التربية الإسلامية', grade: 16 },
-          { subject: 'التاريخ والجغرافيا', grade: 14 },
-          { subject: 'العلوم', grade: 15 },
-        ]),
-      },
+  const newsCount = await prisma.news.count();
+  if (newsCount === 0) {
+    await prisma.news.createMany({
+      data: [
+        { title: 'انطلاق الموسم الدراسي الجديد',   content: 'تُعلن المؤسسة عن انطلاق الموسم الدراسي بأجواء احتفالية.',   category: 'إعلان',  publishedAt: new Date('2025-09-04') },
+        { title: 'حفل توزيع الجوائز السنوي',        content: 'تكريم التلاميذ المتفوقين في الموسم الدراسي.',              category: 'فعالية', publishedAt: new Date('2025-07-10') },
+        { title: 'نتائج الفصل الأول متاحة الآن',    content: 'يمكن الاطلاع على النتائج باستخدام رقم المسار.',            category: 'نتائج',  publishedAt: new Date('2026-01-20') },
+      ],
     });
+    console.log('✓ News seeded');
   }
 
-  // Announcements
-  await prisma.announcement.create({
-    data: { title: 'تعليق الدراسة بمناسبة العيد الوطني', content: 'يُعلم ولياء التلاميذ بتعليق الدراسة يومي 17 و18 نوفمبر بمناسبة عيد الاستقلال المجيد.', isActive: true },
-  });
+  const clubCount = await prisma.club.count();
+  if (clubCount === 0) {
+    await prisma.club.createMany({
+      data: [
+        { name: 'نادي القراءة والكتابة', description: 'ينمّي حب القراءة والكتابة الإبداعية.', supervisors: 'فاطمة الزهراء البكري', isActive: true, order: 1 },
+        { name: 'النادي الرياضي',         description: 'يشجّع على ممارسة الرياضة.',           supervisors: 'لطيفة القادري',        isActive: true, order: 2 },
+        { name: 'نادي الفنون التشكيلية', description: 'يُنمّي الإبداع من خلال الرسم.',        supervisors: 'نجاة الشرقاوي',       isActive: true, order: 3 },
+      ],
+    });
+    console.log('✓ Clubs seeded');
+  }
 
-  // Boarding
-  await prisma.boardingPost.create({
-    data: { title: 'افتتاح الداخلية للموسم الجديد', content: 'تُعلن الداخلية عن فتح باب التسجيل للموسم الدراسي الجديد مع توفير كافة الظروف الملائمة للتلاميذ الداخليين.', category: 'إعلان' },
-  });
+  const activityCount = await prisma.activity.count();
+  if (activityCount === 0) {
+    await prisma.activity.createMany({
+      data: [
+        { title: 'الاحتفال باليوم العالمي للكتاب', description: 'فعالية ثقافية بمشاركة جميع التلاميذ.', category: 'ثقافي',  date: new Date('2025-04-23') },
+        { title: 'يوم الرياضة المدرسي',             description: 'يوم مفتوح للرياضة والترفيه.',          category: 'رياضي', date: new Date('2025-05-15') },
+      ],
+    });
+    console.log('✓ Activities seeded');
+  }
 
-  // Social
-  await prisma.socialPost.create({
-    data: { title: 'حملة توعوية حول الوقاية من الإدمان', content: 'نظّم المختص الاجتماعي للمؤسسة حملة توعوية حول مخاطر الإدمان وكيفية الوقاية منه، موجهة لتلاميذ السنة الخامسة والسادسة.', category: 'توعية' },
-  });
+  const studentCount = await prisma.student.count();
+  if (studentCount === 0) {
+    const s1 = await prisma.student.create({ data: { massarCode: 'J123456789', fullname: 'أمين بنعلي',   level: 'السنة الخامسة', classroom: '5أ' } });
+    const s2 = await prisma.student.create({ data: { massarCode: 'J987654321', fullname: 'سلمى الإدريسي', level: 'السنة السادسة', classroom: '6ب' } });
+    const grades = JSON.stringify([
+      { subject: 'اللغة العربية', grade: 15 },
+      { subject: 'الرياضيات',    grade: 14 },
+      { subject: 'الفرنسية',     grade: 13 },
+    ]);
+    await prisma.studentResult.createMany({
+      data: [
+        { studentId: s1.id, semester: 'الفصل الأول', generalAverage: 14.5, councilDecision: 'منتقل', grades },
+        { studentId: s2.id, semester: 'الفصل الأول', generalAverage: 15.2, councilDecision: 'منتقل', grades },
+      ],
+    });
+    console.log('✓ Students seeded');
+  }
 
-  console.log('✅ Database seeded successfully!');
-  console.log('👤 Admin: admin@mokhtar-school.ma / admin123');
-  console.log('📚 Sample massar codes: J123456789, J987654321, J111222333');
+  const announcementCount = await prisma.announcement.count();
+  if (announcementCount === 0) {
+    await prisma.announcement.create({
+      data: { title: 'تعليق الدراسة بمناسبة العيد الوطني', content: 'تعليق الدراسة يومي 17 و18 نوفمبر.', isActive: true },
+    });
+    console.log('✓ Announcements seeded');
+  }
+
+  console.log('\n✅ Seed complete!');
+  console.log('👤 Login: admin@mokhtar-school.ma / admin123');
 }
 
-main().catch(e => { console.error(e); process.exit(1); }).finally(() => prisma.$disconnect());
+main()
+  .catch(e => { console.error('Seed error:', e.message); process.exit(1); })
+  .finally(() => prisma.$disconnect());
