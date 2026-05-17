@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --blue:        #1a3a6e;
+  --blue-light:  #2557a7;
+  --blue-pale:   #e8f0fe;
+  --green:       #1a7a4a;
+  --green-light: #27ae60;
+  --green-pale:  #e8f5e9;
+}
+
+@layer base {
+  html { direction: rtl; scroll-behavior: smooth; }
+  body {
+    font-family: 'Cairo', sans-serif;
+    @apply bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary-light
+           transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg flex items-center gap-2;
+  }
+  .btn-secondary {
+    @apply bg-secondary text-white px-6 py-3 rounded-xl font-bold hover:bg-secondary-light
+           transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-2;
+  }
+  .btn-outline {
+    @apply border-2 border-primary text-primary px-6 py-3 rounded-xl font-bold
+           hover:bg-primary hover:text-white transition-all duration-200 flex items-center gap-2;
+  }
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-xl
+           transition-all duration-300 hover:-translate-y-1;
+  }
+  .section-title {
+    @apply text-3xl font-black text-primary dark:text-blue-300 mb-2;
+  }
+  .section-tag {
+    @apply inline-block bg-primary-pale text-primary-light text-sm font-bold
+           px-4 py-1 rounded-full mb-3;
+  }
+  .divider {
+    @apply w-14 h-1 bg-gradient-to-l from-primary-light to-secondary-light rounded-full mx-auto my-3;
+  }
+  .input {
+    @apply w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl
+           font-cairo text-sm focus:border-primary-light focus:outline-none
+           dark:bg-gray-700 dark:text-white transition-colors;
+  }
+  .label { @apply text-sm font-bold text-primary dark:text-blue-300 block mb-1; }
+  .badge {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-bold;
+  }
+  .table-head {
+    @apply bg-primary text-white text-right px-4 py-3 font-bold;
+  }
+  .table-cell {
+    @apply px-4 py-3 border-b border-gray-100 dark:border-gray-700 text-sm;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: var(--blue-light); border-radius: 3px; }

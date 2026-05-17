@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now())
+}
+
+model Setting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
+}
+
+model News {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String
+  category    String   @default("عام")
+  imageUrl    String?
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model Activity {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  category    String   @default("نشاط")
+  images      String?
+  videoUrl    String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model Teacher {
+  id           Int      @id @default(autoincrement())
+  fullname     String
+  subject      String
+  photoUrl     String?
+  bio          String?
+  isAdminStaff Boolean  @default(false)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+}
+
+model Student {
+  id         Int             @id @default(autoincrement())
+  massarCode String          @unique
+  fullname   String
+  level      String
+  classroom  String
+  createdAt  DateTime        @default(now())
+  results    StudentResult[]
+}
+
+model StudentResult {
+  id              Int      @id @default(autoincrement())
+  studentId       Int
+  student         Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  semester        String
+  grades          String
+  generalAverage  Float
+  councilDecision String
+  createdAt       DateTime @default(now())
+}
+
+model Club {
+  id          Int            @id @default(autoincrement())
+  name        String
+  logoUrl     String?
+  description String?
+  supervisors String?
+  isActive    Boolean        @default(true)
+  order       Int            @default(0)
+  createdAt   DateTime       @default(now())
+  activities  ClubActivity[]
+}
+
+model ClubActivity {
+  id          Int      @id @default(autoincrement())
+  clubId      Int
+  club        Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  images      String?
+  videoUrl    String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String?
+  phone     String?
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Announcement {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  isActive  Boolean  @default(true)
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model BoardingPost {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  category  String   @default("خبر")
+  images    String?
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model SocialPost {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  category  String   @default("نشاط")
+  images    String?
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+}

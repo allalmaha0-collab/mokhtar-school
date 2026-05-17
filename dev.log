@@ -1,0 +1,20 @@
+﻿
+> mokhtar-school@0.1.0 dev
+> next dev
+
+node.exe :  ظأب Port 3000 is in use, trying 3001 instead.
+Au caractère C:\Program Files\nodejs\npm.ps1:30 : 3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( ظأب Port 3000 ...g 3001 instead.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ ظأب Port 3001 is in use, trying 3002 instead.
+ ظأب Port 3002 is in use, trying 3003 instead.
+ ظأب Port 3003 is in use, trying 3004 instead.
+ ظأب Port 3004 is in use, trying 3005 instead.
+  ظû▓ Next.js 14.2.4
+  - Local:        http://localhost:3005
+  - Environments: .env.local, .env
+
+ ظ£ô Starting...

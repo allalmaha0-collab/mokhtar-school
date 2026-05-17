@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue)",
+      "PowerShell(netstat -an)",
+      "PowerShell(Start-Sleep -Seconds 5; try { $r = Invoke-WebRequest -Uri \"http://localhost:3005\" -TimeoutSec 5 -UseBasicParsing; \"OK: $\\($r.StatusCode\\)\" } catch { \"Not ready yet\" })",
+      "PowerShell(Get-Job | Stop-Job; Get-Job | Remove-Job; Get-Process node | Where-Object {$_.WorkingSet -gt 40MB} | Select-Object Id, WorkingSet | Format-Table)",
+      "PowerShell(Get-NetTCPConnection -State Listen -LocalPort 3000,3001,3002,3003,3004,3005 -ErrorAction SilentlyContinue)"
+    ]
+  }
+}
