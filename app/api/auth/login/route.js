@@ -4,6 +4,13 @@ import prisma from '@/lib/db';
 import { comparePassword, signToken } from '@/lib/auth';
 
 export async function POST(req) {
+  if (!process.env.DATABASE_URL) {
+    return NextResponse.json(
+      { error: 'قاعدة البيانات غير مضبوطة — أضف DATABASE_URL في Vercel' },
+      { status: 503 }
+    );
+  }
+
   try {
     const { email, password } = await req.json();
     if (!email || !password)
@@ -27,15 +34,11 @@ export async function POST(req) {
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7,
       path: '/',
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
     });
     return res;
   } catch (err) {
     console.error('[login]', err.message);
-    // Return real error temporarily to diagnose production issues
-    return NextResponse.json(
-      { error: 'خطأ في الخادم', detail: err.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
