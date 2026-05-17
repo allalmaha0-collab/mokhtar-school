@@ -5,7 +5,20 @@
       "PowerShell(netstat -an)",
       "PowerShell(Start-Sleep -Seconds 5; try { $r = Invoke-WebRequest -Uri \"http://localhost:3005\" -TimeoutSec 5 -UseBasicParsing; \"OK: $\\($r.StatusCode\\)\" } catch { \"Not ready yet\" })",
       "PowerShell(Get-Job | Stop-Job; Get-Job | Remove-Job; Get-Process node | Where-Object {$_.WorkingSet -gt 40MB} | Select-Object Id, WorkingSet | Format-Table)",
-      "PowerShell(Get-NetTCPConnection -State Listen -LocalPort 3000,3001,3002,3003,3004,3005 -ErrorAction SilentlyContinue)"
+      "PowerShell(Get-NetTCPConnection -State Listen -LocalPort 3000,3001,3002,3003,3004,3005 -ErrorAction SilentlyContinue)",
+      "Bash(git add *)",
+      "Bash(git push *)",
+      "Bash(npm --version)",
+      "Bash(npx prisma *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(npm start *)",
+      "Bash(curl -s http://localhost:3000/api/news)",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(git remote *)",
+      "Bash(curl -s \"https://mokhtar-school-tw6o.vercel.app/api/health\")",
+      "Bash(git commit *)",
+      "Bash(node prisma/seed.js)"
     ]
   }
 }
