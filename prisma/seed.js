@@ -3,9 +3,12 @@ const bcrypt = require('bcryptjs');
 
 async function main() {
   const { PrismaClient } = await import('@prisma/client');
+  const { PrismaPg } = await import('@prisma/adapter-pg');
+  const { default: pg } = await import('pg');
 
-  // Prisma 7: reads DATABASE_URL from env automatically
-  const prisma = new PrismaClient();
+  const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+  const adapter = new PrismaPg(pool);
+  const prisma = new PrismaClient({ adapter });
 
   try {
     // ── Admin user ────────────────────────────────────────────────────────────
