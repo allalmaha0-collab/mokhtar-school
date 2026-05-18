@@ -16,6 +16,25 @@ import { Upload, FileSpreadsheet, Check, X, AlertCircle, Download, Loader } from
   level: ['المستوى', 'Level', 'niveau', 'Niveau'],
  classroom: ['القسم', 'الفصل', 'Classe'],
 };
+// Normalize level from any Massar format to "المستوى X"
+function normalizeLevel(raw) {
+  if (!raw) return '';
+  const s = raw.toString().trim();
+  const map = [
+    { keys: ['أول', 'اول', '1', 'أولى', 'اولى', 'الأول', 'الاول', 'première', 'first'], out: 'المستوى الأول' },
+    { keys: ['ثان', 'ثاني', '2', 'الثاني', 'deuxième', 'second'],                        out: 'المستوى الثاني' },
+    { keys: ['ثالث', '3', 'الثالث', 'troisième', 'third'],                               out: 'المستوى الثالث' },
+    { keys: ['رابع', '4', 'الرابع', 'quatrième', 'fourth'],                              out: 'المستوى الرابع' },
+    { keys: ['خامس', '5', 'الخامس', 'cinquième', 'fifth'],                               out: 'المستوى الخامس' },
+    { keys: ['سادس', '6', 'السادس', 'sixième', 'sixth'],                                 out: 'المستوى السادس' },
+  ];
+  const lower = s.toLowerCase();
+  for (const { keys, out } of map) {
+    if (keys.some(k => lower.includes(k.toLowerCase()))) return out;
+  }
+  return s; // keep original if no match
+}
+
 function findCol(headers, keys) {
   for (const k of keys) {
     const found = headers.find(h => h && h.toString().trim().toLowerCase().includes(k.toLowerCase()));
@@ -111,7 +130,7 @@ function parseExcel(file) {
               fullname,
               gender: normalizedGender,
               birth_date,
-              level: sheetLevel || get('level') || '',
+              level: normalizeLevel(sheetLevel || get('level') || ''),
               classroom: sheetClassroom || get('classroom') || '',
               father_name: fatherName,
               _sheet: sheetName,

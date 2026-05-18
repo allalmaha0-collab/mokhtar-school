@@ -3,6 +3,24 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { verifyToken } from '@/lib/auth';
 
+function normalizeLevel(raw) {
+  if (!raw) return '';
+  const s = raw.toString().trim();
+  const map = [
+    { keys: ['أول','اول','1','أولى','اولى'],    out: 'المستوى الأول' },
+    { keys: ['ثان','ثاني','2'],                  out: 'المستوى الثاني' },
+    { keys: ['ثالث','3'],                         out: 'المستوى الثالث' },
+    { keys: ['رابع','4'],                         out: 'المستوى الرابع' },
+    { keys: ['خامس','5'],                         out: 'المستوى الخامس' },
+    { keys: ['سادس','6'],                         out: 'المستوى السادس' },
+  ];
+  const lower = s.toLowerCase();
+  for (const { keys, out } of map) {
+    if (keys.some(k => lower.includes(k.toLowerCase()))) return out;
+  }
+  return s;
+}
+
 export async function POST(req) {
   const token = req.cookies.get('token')?.value;
   if (!verifyToken(token)) return NextResponse.json({ error: 'غير مصرح' }, { status: 401 });
@@ -20,8 +38,8 @@ export async function POST(req) {
       if (existing && skipDuplicates) { duplicates.push(s); continue; }
 
       const student = existing
-        ? await prisma.student.update({ where: { id: existing.id }, data: { fullname: s.fullname, level: s.level || '', classroom: s.classroom || '' } })
-        : await prisma.student.create({ data: { massarCode: massar || `TEMP-${Date.now()}`, fullname: s.fullname || 'غير محدد', level: s.level || '', classroom: s.classroom || '' } });
+        ? await prisma.student.update({ where: { id: existing.id }, data: { fullname: s.fullname, level: normalizeLevel(s.level), classroom: s.classroom || '' } })
+        : await prisma.student.create({ data: { massarCode: massar || `TEMP-${Date.now()}`, fullname: s.fullname || 'غير محدد', level: normalizeLevel(s.level), classroom: s.classroom || '' } });
 
       if (results && massar) {
         const studentResults = results.filter(r => (r.massar_code || r.massarCode) === massar);
