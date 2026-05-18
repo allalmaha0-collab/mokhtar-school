@@ -20,7 +20,7 @@ function LoginForm() {
       const data = await res.json();
       if (!res.ok) { toast.error(data.error || 'بيانات خاطئة'); return; }
       toast.success('مرحباً بك!');
-      router.push(redirect);
+      window.location.href = redirect;
     } catch { toast.error('خطأ في الاتصال'); }
     finally { setLoading(false); }
   }
