@@ -1,0 +1,31 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[1650],{7681:function(e,t,r){Promise.resolve().then(r.bind(r,1066))},1066:function(e,t,r){"use strict";r.r(t),r.d(t,{default:function(){return u}});var a=r(7437),s=r(2265),n=r(6463),l=r(8726),c=r(1976),i=r(8604),o=r(9061);function u(){let e=(0,n.useRouter)(),[t,r]=(0,s.useState)({title:"",content:"",category:"إعلان"}),[u,d]=(0,s.useState)(null),[h,m]=(0,s.useState)(""),[x,f]=(0,s.useState)(!1);async function p(r){r.preventDefault(),f(!0),(await fetch("/api/news",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title:t.title,content:t.content,category:t.category,imageUrl:h||null})})).ok?(l.ZP.success("تم إضافة الخبر"),e.push("/dashboard/news")):(l.ZP.error("فشل الحفظ"),f(!1))}return(0,a.jsxs)("div",{className:"max-w-2xl space-y-5",children:[(0,a.jsxs)("div",{className:"flex items-center gap-3",children:[(0,a.jsx)("button",{onClick:()=>e.back(),className:"p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500",children:(0,a.jsx)(c.Z,{size:20})}),(0,a.jsx)("h1",{className:"text-2xl font-black text-primary dark:text-white",children:"خبر جديد"})]}),(0,a.jsxs)("form",{onSubmit:p,className:"card p-6 space-y-5",children:[(0,a.jsxs)("div",{children:[(0,a.jsx)("label",{className:"label",children:"العنوان *"}),(0,a.jsx)("input",{required:!0,className:"input",placeholder:"عنوان الخبر...",value:t.title,onChange:e=>r(t=>({...t,title:e.target.value}))})]}),(0,a.jsxs)("div",{children:[(0,a.jsx)("label",{className:"label",children:"الفئة"}),(0,a.jsx)("select",{className:"input",value:t.category,onChange:e=>r(t=>({...t,category:e.target.value})),children:["إعلان","نشاط","حفل","دراسي","عام"].map(e=>(0,a.jsx)("option",{children:e},e))})]}),(0,a.jsxs)("div",{children:[(0,a.jsx)("label",{className:"label",children:"المحتوى *"}),(0,a.jsx)("textarea",{required:!0,rows:6,className:"input resize-none",placeholder:"اكتب محتوى الخبر...",value:t.content,onChange:e=>r(t=>({...t,content:e.target.value}))})]}),(0,a.jsxs)("div",{children:[(0,a.jsx)("label",{className:"label",children:"الصورة"}),(0,a.jsxs)("label",{className:"border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-6 flex flex-col items-center gap-2 cursor-pointer hover:border-primary-light transition-colors",children:[h?(0,a.jsx)("img",{src:h,alt:"",className:"max-h-40 rounded-lg object-cover"}):(0,a.jsxs)(a.Fragment,{children:[(0,a.jsx)(i.Z,{size:32,className:"text-gray-300"}),(0,a.jsx)("span",{className:"text-sm text-gray-400",children:"انقر لرفع صورة"})]}),(0,a.jsx)("input",{type:"file",accept:"image/*",className:"hidden",onChange:function(e){let t=e.target.files[0];if(!t)return;d(t);let r=new FileReader;r.onload=e=>m(e.target.result),r.readAsDataURL(t)}})]})]}),(0,a.jsxs)("button",{type:"submit",disabled:x,className:"btn-primary disabled:opacity-60",children:[(0,a.jsx)(o.Z,{size:18})," ",x?"جاري الحفظ...":"حفظ الخبر"]})]})]})}},8030:function(e,t,r){"use strict";r.d(t,{Z:function(){return i}});var a=r(2265);/**
+ * @license lucide-react v0.378.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let s=e=>e.replace(/([a-z0-9])([A-Z])/g,"$1-$2").toLowerCase(),n=function(){for(var e=arguments.length,t=Array(e),r=0;r<e;r++)t[r]=arguments[r];return t.filter((e,t,r)=>!!e&&r.indexOf(e)===t).join(" ")};/**
+ * @license lucide-react v0.378.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */var l={xmlns:"http://www.w3.org/2000/svg",width:24,height:24,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:2,strokeLinecap:"round",strokeLinejoin:"round"};/**
+ * @license lucide-react v0.378.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let c=(0,a.forwardRef)((e,t)=>{let{color:r="currentColor",size:s=24,strokeWidth:c=2,absoluteStrokeWidth:i,className:o="",children:u,iconNode:d,...h}=e;return(0,a.createElement)("svg",{ref:t,...l,width:s,height:s,stroke:r,strokeWidth:i?24*Number(c)/Number(s):c,className:n("lucide",o),...h},[...d.map(e=>{let[t,r]=e;return(0,a.createElement)(t,r)}),...Array.isArray(u)?u:[u]])}),i=(e,t)=>{let r=(0,a.forwardRef)((r,l)=>{let{className:i,...o}=r;return(0,a.createElement)(c,{ref:l,iconNode:t,className:n("lucide-".concat(s(e)),i),...o})});return r.displayName="".concat(e),r}},1976:function(e,t,r){"use strict";r.d(t,{Z:function(){return a}});/**
+ * @license lucide-react v0.378.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let a=(0,r(8030).Z)("ArrowRight",[["path",{d:"M5 12h14",key:"1ays0h"}],["path",{d:"m12 5 7 7-7 7",key:"xquz4c"}]])},8604:function(e,t,r){"use strict";r.d(t,{Z:function(){return a}});/**
+ * @license lucide-react v0.378.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let a=(0,r(8030).Z)("Image",[["rect",{width:"18",height:"18",x:"3",y:"3",rx:"2",ry:"2",key:"1m3agn"}],["circle",{cx:"9",cy:"9",r:"2",key:"af1f0g"}],["path",{d:"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21",key:"1xmnt7"}]])},9061:function(e,t,r){"use strict";r.d(t,{Z:function(){return a}});/**
+ * @license lucide-react v0.378.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let a=(0,r(8030).Z)("Save",[["path",{d:"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z",key:"1c8476"}],["path",{d:"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7",key:"1ydtos"}],["path",{d:"M7 3v4a1 1 0 0 0 1 1h7",key:"t51u73"}]])},6463:function(e,t,r){"use strict";var a=r(1169);r.o(a,"useParams")&&r.d(t,{useParams:function(){return a.useParams}}),r.o(a,"usePathname")&&r.d(t,{usePathname:function(){return a.usePathname}}),r.o(a,"useRouter")&&r.d(t,{useRouter:function(){return a.useRouter}}),r.o(a,"useSearchParams")&&r.d(t,{useSearchParams:function(){return a.useSearchParams}})}},function(e){e.O(0,[8726,2971,7023,1744],function(){return e(e.s=7681)}),_N_E=e.O()}]);

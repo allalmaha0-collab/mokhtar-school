@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import {
-  LayoutDashboard, Newspaper, Star, Users, GraduationCap,
-  Settings, MessageSquare, LogOut, Heart, Building2, HandHeart, Home,
-  FileText, BookOpen, Zap
+  LayoutDashboard, Newspaper, Star, Users,
+  Settings, MessageSquare, LogOut, Heart, HandHeart, Home,
+  FileText, BookOpen, Trophy, Image, Mic, Building2
 } from 'lucide-react';
 
 const nav = [
@@ -13,6 +13,9 @@ const nav = [
   { href: '/dashboard/news',         icon: Newspaper,       label: 'الأخبار',            group: 'المحتوى' },
   { href: '/dashboard/activities',   icon: Star,            label: 'الأنشطة',            group: 'المحتوى' },
   { href: '/dashboard/clubs',        icon: Heart,           label: 'الأندية',            group: 'المحتوى' },
+  { href: '/dashboard/achievements', icon: Trophy,          label: 'جدارية الإنجازات',   group: 'المحتوى' },
+  { href: '/dashboard/media',        icon: Mic,             label: 'الإعلام المدرسي',    group: 'المحتوى' },
+  { href: '/dashboard/photos',       icon: Image,           label: 'أرشيف الصور',        group: 'المحتوى' },
   { href: '/dashboard/social',       icon: HandHeart,       label: 'المختص الاجتماعي',  group: 'المحتوى' },
   { href: '/dashboard/boarding',     icon: Home,            label: 'فضاء الداخلية',      group: 'المحتوى' },
   { href: '/dashboard/teachers',     icon: Users,           label: 'الأساتذة',           group: 'الأطر' },

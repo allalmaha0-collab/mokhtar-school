@@ -149,3 +149,38 @@ model SocialPost {
   date      DateTime @default(now())
   createdAt DateTime @default(now())
 }
+
+model Achievement {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  personName  String?
+  personPhoto String?
+  level       String?
+  type        String   @default("تلميذ الشهر")
+  month       String?
+  year        String?
+  createdAt   DateTime @default(now())
+}
+
+model Photo {
+  id          Int      @id @default(autoincrement())
+  title       String
+  url         String
+  year        String?
+  description String?
+  category    String   @default("أرشيف")
+  createdAt   DateTime @default(now())
+}
+
+model MediaContent {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  url         String?
+  type        String   @default("podcast")
+  thumbnail   String?
+  duration    String?
+  episode     Int?
+  createdAt   DateTime @default(now())
+}
