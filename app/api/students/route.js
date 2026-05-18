@@ -28,9 +28,26 @@ export async function GET(req) {
   const per       = Math.min(100, parseInt(searchParams.get('per') || '20'));
   const skip      = (page - 1) * per;
 
+  // Map standard level names to keywords that match any Massar format
+  const levelKeywords = {
+    'المستوى الأول':  ['أول', 'اول', 'أولى', 'اولى'],
+    'المستوى الثاني': ['ثاني', 'ثان', 'ثانية'],
+    'المستوى الثالث': ['ثالث', 'ثالثة'],
+    'المستوى الرابع': ['رابع', 'رابعة'],
+    'المستوى الخامس': ['خامس', 'خامسة'],
+    'المستوى السادس': ['سادس', 'سادسة'],
+  };
+
   const where = {};
-  if (search)    where.OR = [{ fullname: { contains: search } }, { massarCode: { contains: search } }];
-  if (level)     where.level = { contains: level };
+  if (search) where.OR = [{ fullname: { contains: search } }, { massarCode: { contains: search } }];
+  if (level) {
+    const keywords = levelKeywords[level];
+    if (keywords) {
+      where.OR = keywords.map(k => ({ level: { contains: k } }));
+    } else {
+      where.level = { contains: level };
+    }
+  }
   if (classroom) where.classroom = { contains: classroom };
 
   const [students, total] = await Promise.all([
