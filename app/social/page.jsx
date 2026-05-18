@@ -2,94 +2,94 @@
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { motion } from 'framer-motion';
-import { Heart, Users, Shield, BookOpen, Calendar } from 'lucide-react';
+import { HandHeart, Calendar } from 'lucide-react';
+
+const CAT_COLORS = {
+  'توعية':     'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+  'إرشاد':     'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+  'دعم نفسي':  'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+  'أنشطة':     'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
+  'إعلان':     'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+};
 
 export default function SocialPage() {
-  const [posts, setPosts] = useState([]);
+  const [posts,    setPosts]    = useState([]);
   const [settings, setSettings] = useState({});
+  const [loading,  setLoading]  = useState(true);
+  const [filter,   setFilter]   = useState('all');
 
   useEffect(() => {
-    fetch('/api/social').then(r => r.json()).then(d => setPosts(d.posts || []));
-    fetch('/api/settings').then(r => r.json()).then(d => setSettings(d.settings || {}));
+    Promise.all([
+      fetch('/api/social').then(r => r.json()),
+      fetch('/api/settings').then(r => r.json()),
+    ]).then(([s, st]) => {
+      setPosts(s.posts || []);
+      setSettings(st.settings || {});
+      setLoading(false);
+    });
   }, []);
+
+  const categories = [...new Set(posts.map(p => p.category))];
+  const filtered   = filter === 'all' ? posts : posts.filter(p => p.category === filter);
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar settings={settings} />
 
-      <div className="mt-16 bg-gradient-to-l from-rose-600 to-primary text-white py-16 px-4">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto text-center">
-          <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Heart size={32} />
+      <div className="mt-16 bg-gradient-to-l from-pink-600 to-rose-500 text-white py-14 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/30">
+            <HandHeart size={30} />
           </div>
-          <h1 className="text-4xl font-black mb-3">المختص الاجتماعي</h1>
-          <p className="text-white/80">دعم ومواكبة اجتماعية لتلاميذ المؤسسة</p>
-        </motion.div>
+          <h1 className="text-4xl font-black mb-2">المختص الاجتماعي</h1>
+          <p className="text-white/70 text-sm">توعية — إرشاد — دعم نفسي — أنشطة</p>
+        </div>
       </div>
 
-      <main className="flex-1 py-16 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-5xl mx-auto px-4">
+      <main className="flex-1 max-w-4xl mx-auto px-4 py-10 w-full">
 
-          {/* Services */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
-            {[
-              { icon: Heart, title: 'الدعم النفسي', desc: 'جلسات إصغاء وإرشاد نفسي', color: 'bg-rose-100 text-rose-600' },
-              { icon: Shield, title: 'الحماية', desc: 'الوقاية من العنف والتحرش', color: 'bg-blue-100 text-blue-600' },
-              { icon: Users, title: 'المواكبة', desc: 'مواكبة الحالات الهشة', color: 'bg-green-100 text-green-600' },
-              { icon: BookOpen, title: 'التحسيس', desc: 'حملات توعية وتثقيف', color: 'bg-amber-100 text-amber-600' },
-            ].map(s => (
-              <div key={s.title} className="card p-5 text-center">
-                <div className={`w-12 h-12 rounded-2xl ${s.color} flex items-center justify-center mx-auto mb-3`}>
-                  <s.icon size={22} />
+        {categories.length > 0 && (
+          <div className="flex gap-2 flex-wrap mb-8">
+            <button onClick={() => setFilter('all')}
+              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${filter === 'all' ? 'bg-rose-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200'}`}>
+              الكل ({posts.length})
+            </button>
+            {categories.map(c => (
+              <button key={c} onClick={() => setFilter(c)}
+                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${filter === c ? 'bg-rose-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200'}`}>
+                {c} ({posts.filter(p => p.category === c).length})
+              </button>
+            ))}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="w-10 h-10 border-4 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="card p-16 text-center text-gray-400">
+            <HandHeart size={48} className="mx-auto mb-3 opacity-30" />
+            <p className="font-bold">لا توجد منشورات بعد</p>
+            <p className="text-sm mt-1">أضف محتوى من لوحة الإدارة → المختص الاجتماعي</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filtered.map(p => (
+              <div key={p.id} className="card p-5 hover:shadow-md transition-all">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <span className={`badge text-xs ${CAT_COLORS[p.category] || 'bg-gray-100 text-gray-600'}`}>{p.category}</span>
+                  <span className="text-xs text-gray-400 flex items-center gap-1">
+                    <Calendar size={11} /> {new Date(p.date || p.createdAt).toLocaleDateString('ar-MA')}
+                  </span>
                 </div>
-                <h3 className="font-black text-primary dark:text-white mb-1">{s.title}</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-xs">{s.desc}</p>
+                <h3 className="font-black text-gray-800 dark:text-white text-lg mb-2">{p.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{p.content}</p>
               </div>
             ))}
-          </motion.div>
-
-          {/* About */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="card p-8 mb-10">
-            <h2 className="font-black text-primary dark:text-white text-xl mb-4">عن المختص الاجتماعي</h2>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-              يضطلع المختص الاجتماعي بمجموعة من المهام الحيوية التي تهدف إلى ضمان جودة الحياة المدرسية للتلاميذ وتحقيق الانسجام والتوازن النفسي والاجتماعي داخل المؤسسة.
-            </p>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              يعمل المختص الاجتماعي على رصد الحالات التي تعاني من صعوبات اجتماعية أو نفسية، وتقديم الدعم اللازم لها بالتنسيق مع الأسرة والمؤسسة وشركاء المدرسة.
-            </p>
-          </motion.div>
-
-          {/* Activities */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <h2 className="font-black text-primary dark:text-white text-xl mb-6">الأنشطة والحملات</h2>
-            {posts.length === 0 ? (
-              <div className="card p-12 text-center text-gray-400">
-                <Heart size={40} className="mx-auto mb-3 opacity-40" />
-                <p>لا توجد أنشطة مسجلة حالياً</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {posts.map(p => (
-                  <div key={p.id} className="card p-5">
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <h3 className="font-black text-primary dark:text-white">{p.title}</h3>
-                      <span className="badge bg-rose-100 text-rose-700 text-xs flex-shrink-0">{p.category}</span>
-                    </div>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-3">{p.content}</p>
-                    <p className="text-xs text-gray-400 flex items-center gap-1">
-                      <Calendar size={12} /> {new Date(p.date).toLocaleDateString('ar-MA')}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </motion.div>
-        </div>
+          </div>
+        )}
       </main>
-
       <Footer settings={settings} />
     </div>
   );
