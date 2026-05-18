@@ -12,6 +12,14 @@ export async function GET() {
   return NextResponse.json({ clubs });
 }
 
+export async function DELETE(req) {
+  const token = req.cookies.get('token')?.value;
+  if (!verifyToken(token)) return NextResponse.json({ error: 'غير مصرح' }, { status: 401 });
+  await prisma.clubActivity.deleteMany({});
+  await prisma.club.deleteMany({});
+  return NextResponse.json({ success: true });
+}
+
 export async function POST(req) {
   const token = req.cookies.get('token')?.value;
   if (!verifyToken(token)) return NextResponse.json({ error: 'غير مصرح' }, { status: 401 });

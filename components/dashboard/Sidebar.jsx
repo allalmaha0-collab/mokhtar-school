@@ -4,19 +4,20 @@ import { usePathname, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import {
   LayoutDashboard, Newspaper, Star, Users, GraduationCap,
-  Upload, Settings, MessageSquare, LogOut, Heart, Building2
+  Upload, Settings, MessageSquare, LogOut, Heart, Building2, HandHeart
 } from 'lucide-react';
 
 const nav = [
-  { href: '/dashboard',            icon: LayoutDashboard, label: 'الرئيسية',       group: null },
-  { href: '/dashboard/news',       icon: Newspaper,       label: 'الأخبار',         group: 'المحتوى' },
-  { href: '/dashboard/activities', icon: Star,            label: 'الأنشطة',         group: 'المحتوى' },
-  { href: '/dashboard/clubs',      icon: Heart,           label: 'الأندية',         group: 'المحتوى' },
-  { href: '/dashboard/teachers',   icon: Users,           label: 'الأساتذة',        group: 'الأشخاص' },
-  { href: '/dashboard/students',   icon: GraduationCap,   label: 'التلاميذ',        group: 'الأشخاص' },
-  { href: '/dashboard/import',     icon: Upload,          label: 'استيراد نتائج',   group: 'الأشخاص' },
-  { href: '/dashboard/messages',   icon: MessageSquare,   label: 'الرسائل',         group: 'أخرى' },
-  { href: '/dashboard/settings',   icon: Settings,        label: 'الإعدادات',       group: 'أخرى' },
+  { href: '/dashboard',            icon: LayoutDashboard, label: 'الرئيسية',          group: null },
+  { href: '/dashboard/news',       icon: Newspaper,       label: 'الأخبار',            group: 'المحتوى' },
+  { href: '/dashboard/activities', icon: Star,            label: 'الأنشطة',            group: 'المحتوى' },
+  { href: '/dashboard/clubs',      icon: Heart,           label: 'الأندية',            group: 'المحتوى' },
+  { href: '/dashboard/social',     icon: HandHeart,       label: 'المختص الاجتماعي',  group: 'المحتوى' },
+  { href: '/dashboard/teachers',   icon: Users,           label: 'الأساتذة',           group: 'الأشخاص' },
+  { href: '/dashboard/students',   icon: GraduationCap,   label: 'التلاميذ',           group: 'الأشخاص' },
+  { href: '/dashboard/import',     icon: Upload,          label: 'استيراد مسار',       group: 'الأشخاص' },
+  { href: '/dashboard/messages',   icon: MessageSquare,   label: 'الرسائل',            group: 'أخرى' },
+  { href: '/dashboard/settings',   icon: Settings,        label: 'الإعدادات',          group: 'أخرى' },
 ];
 
 export default function Sidebar({ onClose }) {

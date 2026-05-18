@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(git rm *)",
-      "Bash(curl -s -X POST \"https://mokhtar-school.vercel.app/api/auth/login\" -H \"Content-Type: application/json\" -d '{\"email\":\"admin@mokhtar-school.ma\",\"password\":\"admin123\"}')"
+      "Bash(curl -s -X POST \"https://mokhtar-school.vercel.app/api/auth/login\" -H \"Content-Type: application/json\" -d '{\"email\":\"admin@mokhtar-school.ma\",\"password\":\"admin123\"}')",
+      "Bash(mkdir -p \"c:\\\\Users\\\\a\\\\Desktop\\\\mohammed al mokhtar\\\\school-app\\\\app\\\\dashboard\\\\teachers\\\\[id]\")",
+      "Bash(mkdir -p \"c:\\\\Users\\\\a\\\\Desktop\\\\mohammed al mokhtar\\\\school-app\\\\app\\\\dashboard\\\\clubs\\\\[id]\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\a\\Desktop\\mohammed al mokhtar\\school-app\\app\\dashboard\\teachers",
+      "c:\\Users\\a\\Desktop\\mohammed al mokhtar\\school-app\\app\\dashboard\\clubs"
     ]
   }
 }

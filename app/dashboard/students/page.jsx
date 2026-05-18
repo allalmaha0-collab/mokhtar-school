@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Plus, Trash2, Edit2, Download, Upload } from 'lucide-react';
+import { Search, Plus, Trash2, Edit2, Download, Upload, Trash } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -15,6 +15,7 @@ export default function StudentsPage() {
   const [page,      setPage]      = useState(1);
   const [total,     setTotal]     = useState(0);
   const [pages,     setPages]     = useState(1);
+  const [deleting,  setDeleting]  = useState(false);
   const PER = 20;
 
   const fetchStudents = useCallback(async () => {
@@ -53,6 +54,15 @@ export default function StudentsPage() {
     a.click();
   }
 
+  async function deleteAll() {
+    if (!confirm(`⚠️ حذف جميع التلاميذ (${total})؟ لا يمكن التراجع!`)) return;
+    setDeleting(true);
+    const res = await fetch('/api/students', { method: 'DELETE' });
+    if (res.ok) { toast.success('تم حذف الكل'); fetchStudents(); }
+    else toast.error('فشل الحذف');
+    setDeleting(false);
+  }
+
   function changeSearch(v) { setSearch(v); setPage(1); }
   function changeLevel(v)  { setLevel(v);  setPage(1); }
   function changeClass(v)  { setClassroom(v); setPage(1); }
@@ -69,6 +79,12 @@ export default function StudentsPage() {
           <button onClick={exportCSV} className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-bold transition-all">
             <Download size={16} /> تصدير CSV
           </button>
+          {total > 0 && (
+            <button onClick={deleteAll} disabled={deleting}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 border border-red-200 dark:border-red-800 text-sm font-bold hover:bg-red-100 transition-all disabled:opacity-50">
+              <Trash size={16} /> حذف الكل
+            </button>
+          )}
           <Link href="/dashboard/import" className="flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 text-white text-sm font-bold hover:bg-orange-600 transition-all">
             <Upload size={16} /> استيراد من مسار
           </Link>

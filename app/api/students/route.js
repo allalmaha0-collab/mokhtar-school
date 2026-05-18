@@ -41,6 +41,15 @@ export async function GET(req) {
   return NextResponse.json({ students, total, page, pages: Math.ceil(total / per) });
 }
 
+// DELETE all students
+export async function DELETE(req) {
+  const token = req.cookies.get('token')?.value;
+  if (!verifyToken(token)) return NextResponse.json({ error: 'غير مصرح' }, { status: 401 });
+  await prisma.studentResult.deleteMany({});
+  await prisma.student.deleteMany({});
+  return NextResponse.json({ success: true });
+}
+
 export async function POST(req) {
   const token = req.cookies.get('token')?.value;
   if (!verifyToken(token)) return NextResponse.json({ error: 'غير مصرح' }, { status: 401 });

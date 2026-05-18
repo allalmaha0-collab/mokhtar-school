@@ -15,3 +15,11 @@ export async function POST(req) {
   const teacher = await prisma.teacher.create({ data: body });
   return NextResponse.json({ teacher }, { status: 201 });
 }
+
+// DELETE all teachers
+export async function DELETE(req) {
+  const token = req.cookies.get('token')?.value;
+  if (!verifyToken(token)) return NextResponse.json({ error: 'غير مصرح' }, { status: 401 });
+  await prisma.teacher.deleteMany({});
+  return NextResponse.json({ success: true });
+}
