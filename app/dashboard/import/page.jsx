@@ -155,13 +155,17 @@ function parseExcel(file) {
   });
 }
 
+const LEVELS = ['المستوى الأول','المستوى الثاني','المستوى الثالث','المستوى الرابع','المستوى الخامس','المستوى السادس'];
+
 export default function ImportPage() {
-  const [step,     setStep]     = useState('upload'); // upload | preview | importing | done
-  const [file,     setFile]     = useState(null);
-  const [parsed,   setParsed]   = useState(null);
-  const [progress, setProgress] = useState({ done: 0, total: 0, errors: 0 });
-  const [duplicates, setDuplicates] = useState([]);
-  const [skipDups, setSkipDups] = useState(true);
+  const [step,          setStep]         = useState('upload');
+  const [file,          setFile]         = useState(null);
+  const [parsed,        setParsed]       = useState(null);
+  const [progress,      setProgress]     = useState({ done: 0, total: 0, errors: 0 });
+  const [duplicates,    setDuplicates]   = useState([]);
+  const [skipDups,      setSkipDups]     = useState(true);
+  const [manualLevel,   setManualLevel]  = useState('');   // override level for all students
+  const [manualClass,   setManualClass]  = useState('');   // override classroom
 
   const onDrop = useCallback(async (accepted) => {
     const f = accepted[0];
@@ -187,7 +191,12 @@ export default function ImportPage() {
   async function startImport() {
     if (!parsed) return;
     setStep('importing');
-    const students = parsed.students;
+    // Apply manual overrides if set
+    const students = parsed.students.map(s => ({
+      ...s,
+      level:     manualLevel || s.level || '',
+      classroom: manualClass || s.classroom || '',
+    }));
     let done = 0, errors = 0;
     const errs = [];
 
@@ -211,7 +220,7 @@ export default function ImportPage() {
     toast.success(`تم استيراد ${done} تلميذ بنجاح`);
   }
 
-  function reset() { setStep('upload'); setFile(null); setParsed(null); setProgress({ done: 0, total: 0, errors: 0 }); setDuplicates([]); }
+  function reset() { setStep('upload'); setFile(null); setParsed(null); setProgress({ done: 0, total: 0, errors: 0 }); setDuplicates([]); setManualLevel(''); setManualClass(''); }
 
   function downloadTemplate() {
     const ws = XLSX.utils.aoa_to_sheet([
@@ -310,6 +319,31 @@ export default function ImportPage() {
                 <p className="text-xs font-bold">{l}</p>
               </div>
             ))}
+          </div>
+
+          {/* Manual level/class override */}
+          <div className="card p-4 border-2 border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/10">
+            <p className="font-black text-amber-800 dark:text-amber-300 text-sm mb-3 flex items-center gap-2">
+              ⚙️ ضبط يدوي (اختياري) — إذا لم يُكشف المستوى تلقائياً
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="label text-xs">تعيين المستوى لجميع التلاميذ</label>
+                <select className="input text-sm" value={manualLevel} onChange={e => setManualLevel(e.target.value)}>
+                  <option value="">— تلقائي من الملف —</option>
+                  {LEVELS.map(l => <option key={l} value={l}>{l}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="label text-xs">تعيين القسم لجميع التلاميذ</label>
+                <input className="input text-sm" placeholder="مثال: أ أو A (اختياري)" value={manualClass} onChange={e => setManualClass(e.target.value)} />
+              </div>
+            </div>
+            {manualLevel && (
+              <p className="text-xs text-amber-700 dark:text-amber-400 mt-2">
+                ✓ سيتم تعيين <strong>{manualLevel}</strong> لجميع التلاميذ في هذا الاستيراد
+              </p>
+            )}
           </div>
 
           {/* Options */}
