@@ -4,14 +4,6 @@ import prisma from '@/lib/db';
 import { comparePassword, signToken } from '@/lib/auth';
 
 export async function POST(req) {
-  const hasDb = process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL
-  if (!hasDb) {
-    return NextResponse.json(
-      { error: 'قاعدة البيانات غير مضبوطة — أضف DATABASE_URL في Vercel' },
-      { status: 503 }
-    );
-  }
-
   try {
     const { email, password } = await req.json();
     if (!email || !password)
