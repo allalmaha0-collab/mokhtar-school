@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Sun, Moon, Menu, X, GraduationCap, ChevronDown } from 'lucide-react';
+import BreakingNewsTicker from '@/components/BreakingNewsTicker';
 
 const LINKS = [
   { href: '/',           label: 'الرئيسية' },
@@ -33,8 +34,9 @@ export default function Navbar({ settings = {} }) {
 
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 font-cairo ${
-      scrolled ? 'bg-primary/97 backdrop-blur-sm shadow-lg py-0' : 'bg-primary py-1'
+      scrolled ? 'bg-primary/97 backdrop-blur-sm shadow-lg' : 'bg-primary'
     }`}>
+      <BreakingNewsTicker />
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
 
         {/* Logo */}

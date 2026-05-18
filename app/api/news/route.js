@@ -5,10 +5,14 @@ import { verifyToken } from '@/lib/auth';
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
-  const limit = parseInt(searchParams.get('limit') || '20');
+  const limit    = parseInt(searchParams.get('limit') || '20');
+  const breaking = searchParams.get('breaking') === 'true';
+
+  const where = breaking ? { isBreaking: true } : {};
   const news = await prisma.news.findMany({
+    where,
     orderBy: { publishedAt: 'desc' },
-    take: limit,
+    take: breaking ? 10 : limit,
   });
   return NextResponse.json({ news });
 }
