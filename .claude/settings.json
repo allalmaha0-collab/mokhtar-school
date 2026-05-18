@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git rm *)",
+      "Bash(curl -s -X POST \"https://mokhtar-school.vercel.app/api/auth/login\" -H \"Content-Type: application/json\" -d '{\"email\":\"admin@mokhtar-school.ma\",\"password\":\"admin123\"}')"
+    ]
+  }
+}
