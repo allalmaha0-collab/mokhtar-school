@@ -8,11 +8,5 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
-  // Include SQLite database file in all serverless function bundles
-  experimental: {
-    outputFileTracingIncludes: {
-      '/api/**': ['./prisma/school.db'],
-    },
-  },
 };
 export default nextConfig;
