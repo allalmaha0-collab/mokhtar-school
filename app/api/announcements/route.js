@@ -12,7 +12,7 @@ async function syncAnnouncements() {
 
 export async function GET() {
   const cached = await ecGet('announcements');
-  const announcements = cached || await prisma.announcement.findMany({ where: { isActive: true }, orderBy: { date: 'desc' } });
+  const announcements = cached != null ? cached : await prisma.announcement.findMany({ where: { isActive: true }, orderBy: { date: 'desc' } });
   return NextResponse.json({ announcements });
 }
 

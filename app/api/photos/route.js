@@ -13,7 +13,7 @@ async function sync() {
 export async function GET() {
   try {
     const cached = await ecGet('photos');
-    const photos = cached || await prisma.photo.findMany({ orderBy: [{ year: 'desc' }, { createdAt: 'desc' }] });
+    const photos = cached != null ? cached : await prisma.photo.findMany({ orderBy: [{ year: 'desc' }, { createdAt: 'desc' }] });
     return NextResponse.json({ photos });
   } catch (err) { return NextResponse.json({ photos: [], error: err.message }, { status: 500 }); }
 }

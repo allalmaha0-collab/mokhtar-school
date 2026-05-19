@@ -15,7 +15,7 @@ async function syncTeachers() {
 export async function GET() {
   try {
     const cached = await ecGet('teachers');
-    const teachers = cached || await prisma.teacher.findMany({ orderBy: [{ order: 'asc' }, { fullname: 'asc' }] });
+    const teachers = cached != null ? cached : await prisma.teacher.findMany({ orderBy: [{ order: 'asc' }, { fullname: 'asc' }] });
     return NextResponse.json({ teachers });
   } catch (err) {
     return NextResponse.json({ teachers: [], error: err.message }, { status: 500 });

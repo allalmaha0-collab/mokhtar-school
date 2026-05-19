@@ -15,8 +15,8 @@ async function syncClubs() {
 export async function GET() {
   try {
     const cached = await ecGet('clubs');
-    let clubs = cached || await prisma.club.findMany({ where: { isActive: true }, orderBy: [{ order: 'asc' }], include: { activities: { orderBy: { date: 'desc' }, take: 5 } } });
-    if (cached) clubs = clubs.filter(c => c.isActive);
+    let clubs = cached != null ? cached : await prisma.club.findMany({ where: { isActive: true }, orderBy: [{ order: 'asc' }], include: { activities: { orderBy: { date: 'desc' }, take: 5 } } });
+    if (cached != null) clubs = clubs.filter(c => c.isActive);
     return NextResponse.json({ clubs });
   } catch (err) {
     return NextResponse.json({ clubs: [], error: err.message }, { status: 500 });

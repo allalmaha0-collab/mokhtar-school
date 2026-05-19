@@ -20,7 +20,7 @@ export async function GET(req) {
 
     // Try Edge Config, fall back to SQLite
     let news = await ecGet('news');
-    if (!news) {
+    if (news == null) {
       news = await prisma.news.findMany({ orderBy: { publishedAt: 'desc' } });
     }
 

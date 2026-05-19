@@ -15,7 +15,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get('type') || '';
     const cached = await ecGet('achievements');
-    let items = cached || await prisma.achievement.findMany({ orderBy: { createdAt: 'desc' } });
+    let items = cached != null ? cached : await prisma.achievement.findMany({ orderBy: { createdAt: 'desc' } });
     if (type) items = items.filter(i => i.type === type);
     return NextResponse.json({ achievements: items });
   } catch (err) { return NextResponse.json({ achievements: [], error: err.message }, { status: 500 }); }

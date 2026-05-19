@@ -15,7 +15,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get('type') || '';
     const cached = await ecGet('media');
-    let items = cached || await prisma.mediaContent.findMany({ orderBy: { createdAt: 'desc' } });
+    let items = cached != null ? cached : await prisma.mediaContent.findMany({ orderBy: { createdAt: 'desc' } });
     if (type) items = items.filter(i => i.type === type);
     return NextResponse.json({ media: items });
   } catch (err) { return NextResponse.json({ media: [], error: err.message }, { status: 500 }); }

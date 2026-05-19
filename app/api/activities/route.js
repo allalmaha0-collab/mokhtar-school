@@ -19,7 +19,7 @@ export async function GET(req) {
     const category = searchParams.get('category') || '';
 
     let activities = await ecGet('activities');
-    if (!activities) activities = await prisma.activity.findMany({ orderBy: { date: 'desc' } });
+    if (activities == null) activities = await prisma.activity.findMany({ orderBy: { date: 'desc' } });
 
     if (category) activities = activities.filter(a => a.category === category);
     return NextResponse.json({ activities: activities.slice(0, limit) });
