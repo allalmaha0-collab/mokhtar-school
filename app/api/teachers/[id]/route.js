@@ -2,8 +2,14 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { verifyToken } from '@/lib/auth';
+import { ecSet } from '@/lib/store';
 
 function auth(req) { return verifyToken(req.cookies.get('token')?.value); }
+
+async function syncTeachers() {
+  const teachers = await prisma.teacher.findMany({ orderBy: [{ order: 'asc' }, { fullname: 'asc' }] });
+  await ecSet('teachers', teachers);
+}
 
 export async function GET(req, { params }) {
   const teacher = await prisma.teacher.findUnique({ where: { id: parseInt(params.id) } });
@@ -15,11 +21,13 @@ export async function PATCH(req, { params }) {
   if (!auth(req)) return NextResponse.json({ error: 'غير مصرح' }, { status: 401 });
   const body = await req.json();
   const teacher = await prisma.teacher.update({ where: { id: parseInt(params.id) }, data: body });
+  await syncTeachers();
   return NextResponse.json({ teacher });
 }
 
 export async function DELETE(req, { params }) {
   if (!auth(req)) return NextResponse.json({ error: 'غير مصرح' }, { status: 401 });
   await prisma.teacher.delete({ where: { id: parseInt(params.id) } });
+  await syncTeachers();
   return NextResponse.json({ success: true });
 }

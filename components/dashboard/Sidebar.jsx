@@ -2,11 +2,32 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { useState } from 'react';
 import {
   LayoutDashboard, Newspaper, Star, Users,
   Settings, MessageSquare, LogOut, Heart, HandHeart, Home,
-  FileText, BookOpen, Trophy, Image, Mic, Building2
+  FileText, BookOpen, Trophy, Image, Mic, Building2, RefreshCw
 } from 'lucide-react';
+
+function SyncButton() {
+  const [syncing, setSyncing] = useState(false);
+  async function sync() {
+    setSyncing(true);
+    try {
+      const res = await fetch('/api/sync', { method: 'POST' });
+      if (res.ok) toast.success('✅ تمت المزامنة مع الموقع');
+      else toast.error('فشلت المزامنة');
+    } catch { toast.error('خطأ في الاتصال'); }
+    finally { setSyncing(false); }
+  }
+  return (
+    <button onClick={sync} disabled={syncing}
+      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-green-300 hover:bg-green-500/20 hover:text-green-200 text-sm font-bold transition-all mb-1 disabled:opacity-50">
+      <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} />
+      {syncing ? 'جاري المزامنة...' : 'مزامنة مع الموقع'}
+    </button>
+  );
+}
 
 const nav = [
   { href: '/dashboard',              icon: LayoutDashboard, label: 'الرئيسية',          group: null },
@@ -88,6 +109,7 @@ export default function Sidebar({ onClose }) {
 
       {/* Footer */}
       <div className="p-3 border-t border-white/10">
+        <SyncButton />
         <Link href="/" onClick={onClose}
           className="flex items-center gap-3 px-3 py-2 rounded-xl text-white/60 hover:text-white hover:bg-white/10 text-sm transition-all mb-1">
           ← العودة للموقع
